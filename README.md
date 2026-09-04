@@ -1,6 +1,6 @@
 # 🏥 Executive Healthcare Analytics & Operational Dashboard
 
-An end-to-end Healthcare Data Analytics project designed for hospital executive leadership and clinical operations managers. This repository showcases a complete analytics pipeline integrating **SQL** for database cleaning and complex business intelligence queries, **Python** for exploratory data profiling, and **Power BI** for interactive decision-support dashboards.
+An end-to-end Healthcare Data Analytics project designed for hospital executive leadership and clinical operations managers. This repository showcases a full analytics pipeline integrating **SQL** for database cleaning and complex business intelligence, **Python** for exploratory data profiling, and **Power BI** for interactive decision-support dashboards.
 
 ---
 
@@ -10,11 +10,94 @@ An end-to-end Healthcare Data Analytics project designed for hospital executive 
 
 ---
 
-## 🛠️ Tools & Technologies
+## 🛠️ Tech Stack & Methodology
 
-* **SQL (MySQL):** Database Cleaning, Deduplication, Window Functions, Business Logic Aggregations
-* **Python (Pandas / NumPy / Seaborn / Matplotlib):** Comprehensive EDA, Distribution Profiling, Correlation Analysis
-* **Power BI Desktop:** Interactive Visualization, Data Modeling, DAX Measures, Operational Metrics
+* **Data Cleaning & Engineering:** SQL (MySQL) — Data Normalization, Deduplication, Stay Duration Calculations, Primary/Surrogate Key Generation.
+* **Exploratory Data Analysis:** Python (`Pandas`, `NumPy`, `Seaborn`, `Matplotlib`) — High-Cost Patient Outlier Analysis, Demographic Distribution, Correlation Matrix.
+* **Data Modeling & Visualization:** Power BI Desktop, Power Query, DAX — Interactive Dashboard Views, Custom Operational Measures.
+* **Documentation & Version Control:** Git & GitHub.
+
+---
+
+## 🧹 SQL Data Pipeline Overview
+
+The raw patient dataset underwent extensive data cleaning in MySQL to ensure data integrity, eliminate duplicate records, and generate calculated clinical indicators.
+
+### Key Cleaning Procedures:
+* **String Standardization:** Capitalized patient names into standard title-case formatting.
+* **Length of Stay (LOS) Calculation:** Computed total stay duration using `DATEDIFF` on admission and discharge dates.
+* **Record Deduplication:** Applied Window Functions (`ROW_NUMBER OVER PARTITION`) to eliminate redundant patient records.
+* **Data Transformation:** Generated daily billing rates and assigned surrogate keys (`Patient_ID`, `Visit_ID`).
+
+```sql
+-- Sample: Deduplication via Window Function
+CREATE TABLE healthcare_clean AS
+SELECT * FROM (
+    SELECT *,
+           ROW_NUMBER() OVER (
+               PARTITION BY Name, `Date of Admission`, `Medical Condition`
+               ORDER BY `Discharge Date` DESC
+           ) AS row_num
+    FROM healthcare_dataset
+) AS temp
+WHERE row_num = 1;
+```
+
+---
+
+## 📊 Business Analytics Insights (SQL Highlights)
+
+7 core analytical SQL queries were developed to evaluate clinical risks, emergency department demand, and revenue performance across hospital conditions.
+
+### Highlights:
+1. **Emergency Blood Demand:** Evaluated emergency admission shares by blood group for blood bank inventory planning.
+2. **Treatment Efficacy:** Analyzed normal vs. abnormal test result ratios across condition-medication combinations.
+3. **Demographic Risk Profiling:** Measured length of stay and billing metrics between Senior (>60) and Non-Senior cohorts.
+
+```sql
+-- Sample: Emergency Blood Type Demand Breakdown
+SELECT 
+    `Blood Type`,
+    COUNT(*) AS Emergency_Patients_Count,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 1) AS Share_Pct
+FROM hospital_data
+WHERE `Admission Type` = 'Emergency'
+GROUP BY `Blood Type`
+ORDER BY Emergency_Patients_Count DESC;
+```
+
+---
+
+## 🐍 Python Exploratory Data Analysis (EDA)
+
+The Python analysis pipeline established statistical baselines, identified high-cost patient outliers (top 10% billing threshold), and plotted temporal admission trends.
+
+```python
+# Sample: High-Cost Outlier Segmentation & Correlation Matrix
+high_cost_threshold = df["Billing Amount"].quantile(0.90)
+df["High Cost Status"] = np.where(df["Billing Amount"] >= high_cost_threshold, "High Cost", "Regular")
+
+numeric_cols = ["Age", "Billing Amount", "Room Number", "Stay_Duration_Days", "Daily_Billing_Amount"]
+correlation_matrix = df[numeric_cols].corr()
+```
+
+---
+
+## 📑 Project Files
+
+* 📂 **`Healthcare_Analytics_Dashboard.pbix`**: Interactive Power BI workbook with full data modeling and DAX measures.
+* 📄 **`Healthcare_Data_Analysis_Documentation.pdf`**: Complete PDF report covering all SQL queries, Python charts, and operational metrics.
+* 🖼️ **`dashboard-overview.png`**: High-resolution dashboard screenshot.
+
+---
+
+## 👤 Author & Contact
+
+**Omar Mohamed Zainhom Farghali**  
+*Data Analysis Specialist | Computer Science Student at Cairo University*
+
+* **GitHub Profile:** [@Omar-Zainhom](https://github.com/Omar-Zainhom)
+* **Project Repository:** [Healthcare_Dashboard](https://github.com/Omar-Zainhom/Healthcare_Dashboard)* **Power BI Desktop:** Interactive Visualization, Data Modeling, DAX Measures, Operational Metrics
 * **Power Query:** Schema Structuring & Transformation Pipeline
 * **GitHub:** Portfolio Hosting, Asset Management & Documentation
 
