@@ -24,5 +24,6 @@ An interactive Power BI dashboard designed for executive leadership to monitor p
 
 * **Power BI Desktop**
 * **DAX (Data Analysis Expressions)**
-* **Power Query** (Data Cleaning & Modeling)
-* **GitHub** (Project Hosting)
+* **SQL:** Data Cleaning, Transformation & Exploratory Analysis
+* **Python (Pandas / NumPy):** Advanced Data Profiling & Additional Insights
+* **GitHub:** Project Hosting & Version Control
