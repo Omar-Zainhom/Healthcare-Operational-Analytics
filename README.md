@@ -6,7 +6,7 @@ An interactive Power BI dashboard designed for executive leadership to monitor p
 
 ## 📸 Dashboard Preview
 
-![Healthcare Dashboard Overview](./Screenshot%202026-09-03%20192516.png)
+![Healthcare Dashboard Overview](./dashboard-overview.png)
 
 ---
 
